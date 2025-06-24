@@ -1,14 +1,14 @@
 import { Routes, Route } from 'react-router-dom'
 import Register from './pages/Model/Register'
-import Dashboard from './pages/Model/Dashboard'
+import ModelDashboard from './pages/Model/Dashboard'
 import Login from './pages/Model/Login'
 import AgencyRegister from './pages/Agency/Register'
 import AgencyDashboard from './pages/Agency/Dashboard'
 import AgencyLogin from './pages/Agency/Login'
 import Home from './pages/Home/Home'
 import CreatorInsightsDashboard from './pages/Agency/ModelView'
-import Layout from './components/Layout' // ⬅️ Layout that wraps Sidebar + Outlet
-
+import AgencyLayout from './layouts/AgencyLayout' // ⬅️ Layout that wraps Sidebar + Outlet
+import ModelLayout from './layouts/ModelLayout'
 function App() {
   return (
     <Routes>
@@ -20,13 +20,15 @@ function App() {
       <Route path="/agency/register" element={<AgencyRegister />} />
 
       {/* Pages with sidebar using Layout */}
-      <Route path="/model" element={<Layout />}>
-        <Route path="dashboard" element={<Dashboard />} />
+      <Route element={<ModelLayout />}>
+        <Route path="/model/dashboard" element={<ModelDashboard />} />
+        {/* <Route path="/agency/messages" element={<ComingSoon />} /> */}
       </Route>
 
-      <Route path="/agency" element={<Layout />}>
-        <Route path="dashboard" element={<AgencyDashboard />} />
-        <Route path="model-view/:id" element={<CreatorInsightsDashboard />} />
+      <Route element={<AgencyLayout />}>
+        <Route path="/agency/dashboard" element={<AgencyDashboard />} />
+        <Route path="/agency/model-view/:id" element={<CreatorInsightsDashboard />} />
+        {/* <Route path="/agency/messages/:id" element={<ChatWindow />} /> */}
       </Route>
     </Routes>
   )

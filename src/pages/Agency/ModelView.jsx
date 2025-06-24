@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 import { Link, useParams } from 'react-router-dom';
 import axios from 'axios';
+import ChatWindow from '../../components/ChatWindow'
 
 export default function CreatorInsightsDashboard() {
   const [activeTab, setActiveTab] = useState('All');
@@ -86,8 +87,8 @@ export default function CreatorInsightsDashboard() {
     { hour: '10PM', earnings: 180 }
   ];
 
-const sidebarItems = [
-  { icon: MessageSquare, label: 'Messenger' },
+const [sidebarItems, setSidebarItems] = useState([
+  { icon: MessageSquare, label: 'Messenger',active: false },
   { icon: Calendar, label: 'Billing' },
   { icon: Calendar, label: 'Calendar' },
   { icon: Calendar, label: 'Tasks' },
@@ -100,7 +101,7 @@ const sidebarItems = [
   { icon: Gift, label: 'Paid Platforms' },
   { icon: Trophy, label: 'Rewards' },
   { icon: Film, label: 'Reel Examples' },
-];
+]);
 
 
   const tabItems = ['All', 'Subscriptions', 'Recurring subscriptions', 'Tips', 'Posts', 'Messages', 'Streams'];
@@ -127,12 +128,27 @@ const sidebarItems = [
     useEffect(()=> {
         fetchModel();
     },[id])
+
+    const activeMenu = sidebarItems.find((item) => item.active)?.label;
+
+    const handleTabClick = (label) => {
+  const updatedItems = sidebarItems.map((item) => ({
+    ...item,
+    active: item.label === label, // only the clicked one is active
+  }));
+  setSidebarItems(updatedItems);
+};
+
+
   return (
     <div className="flex bg-gray-900 text-white ml-16">
       {/* Sidebar */}
-      <div className="w-64 overflow-y-auto scrollbar-none bg-gray-900 p-4">
+      <div className="w-64 overflow-y-auto h-[87.2vh] scrollbar-none bg-gray-900 p-4">
 
-        <div className="mb-4">
+        <div onClick={() => {
+    const reset = sidebarItems.map((item) => ({ ...item, active: false }));
+    setSidebarItems(reset);
+  }} className="mb-4 cursor-pointer">
           
           <div className="bg-gray-700 rounded-lg p-3 mb-4">
             <div className="flex items-center">
@@ -147,6 +163,7 @@ const sidebarItems = [
           {sidebarItems.map((item, index) => (
             <div
               key={index}
+              onClick={() => handleTabClick(item.label)}
               className={`flex items-center p-3 rounded-lg cursor-pointer transition-colors ${
                 item.active ? 'bg-blue-600' : 'hover:bg-gray-700'
               }`}
@@ -159,7 +176,8 @@ const sidebarItems = [
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 overflow-y-auto scrollbar-none p-6">
+      {!activeMenu && (
+        <div className="flex-1 h-[87.2vh] overflow-y-auto scrollbar-none p-6">
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold">Creator Insights</h1>
@@ -340,6 +358,13 @@ const sidebarItems = [
           </div>
         </div>
       </div>
+      )}
+      {activeMenu == 'Messenger' && (
+        <div className="flex-1 h-[87.2vh] overflow-y-auto scrollbar-none p-6">
+          <ChatWindow id={id} />
+        </div>
+      )}
+      
     </div>
   );
 }

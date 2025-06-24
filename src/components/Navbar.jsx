@@ -24,7 +24,6 @@ const Badge = ({ children, className = "" }) => (
 
 const Navbar = () => {
     const userInfo = JSON.parse(localStorage.getItem('auth'))?.user
-    console.log(userInfo)
   return (
     <div className='ml-16'>
             <header className="flex items-center justify-between p-6 border-b border-gray-700 bg-gray-900 text-white">

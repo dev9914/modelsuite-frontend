@@ -54,8 +54,14 @@ const Sidebar = () => {
   const [selectedUser, setSelectedUser] = useState(null)
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
+  const [showMenu, setShowMenu] = useState(false);
   const navigate = useNavigate();
   const baseURL = import.meta.env.VITE_API_BASE_URL;
+
+  const handleLogout = () => {
+  localStorage.removeItem('auth'); // or whatever your key is
+  navigate('/agency/login'); // redirect to login
+};
 
   const fetchAgencyModels = async () => {
   try {
@@ -235,9 +241,19 @@ const handleAddModelToAgency = async () => {
             <HelpCircle className="h-5 w-5" />
           </Button>
           <Button variant="ghost" size="icon" className="text-gray-400 hover:text-white">
-            <Settings className="h-5 w-5" />
+            <Settings onClick={() => setShowMenu(!showMenu)} className="h-5 w-5" />
           </Button>
         </div>
+              {showMenu && (
+    <div className="absolute bottom-16 mt-2 w-24 ml-12 bg-white shadow-md rounded-md z-50">
+      <button
+        onClick={handleLogout}
+        className="block w-full text-left px-4 text-black py-2 hover:bg-gray-100"
+      >
+        Logout
+      </button>
+    </div>
+  )}
       </div>
 
       {/* Search Modal Overlay */}

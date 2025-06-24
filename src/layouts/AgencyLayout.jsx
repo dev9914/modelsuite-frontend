@@ -1,8 +1,18 @@
 import { Outlet } from "react-router-dom"
 import Sidebar from "../pages/Sidebar/Sidebar"
-import Navbar from "./Navbar"
+import Navbar from "../components/Navbar"
+import socket from "../utils/socket"
+import { useEffect } from "react"
 
 const Layout = () => {
+
+    const user = JSON.parse(localStorage.getItem('auth'))?.user
+
+  useEffect(() => {
+    if (user?._id) {
+      socket.emit('register', { userId: user._id });
+    }
+  }, [user]);
   return (
     <div className="flex h-screen">
   {/* Sidebar */}
