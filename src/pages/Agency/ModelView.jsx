@@ -1,14 +1,30 @@
 import React, { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 import axios from "axios"
-import { MessageSquare, UploadCloud, Flame, ShieldAlert, Users, Gift, Trophy, Film, Calendar, TrendingUp, Plus } from "lucide-react"
+import {
+  MessageSquare,
+  UploadCloud,
+  Flame,
+  ShieldAlert,
+  Users,
+  Gift,
+  Trophy,
+  Film,
+  Calendar,
+  TrendingUp,
+  Plus,
+  Trash2,
+} from "lucide-react"
 import ChatWindow from "../../components/ChatWindow"
 
 export default function CreatorInsightsDashboard() {
   const { id } = useParams()
   const user = JSON.parse(localStorage.getItem("auth"))?.user
+  const token = JSON.parse(localStorage.getItem("auth"))?.token
+  const baseURL = import.meta.env.VITE_API_BASE_URL
+
   const [sidebarItems, setSidebarItems] = useState([
-    { icon: MessageSquare, label: "Messenger", active: false },
+    { icon: MessageSquare, label: "Messenger", active: true },
     { icon: Calendar, label: "Billing" },
     { icon: Calendar, label: "Calendar" },
     { icon: Calendar, label: "Tasks" },
@@ -27,9 +43,9 @@ export default function CreatorInsightsDashboard() {
   const [selectedChat, setSelectedChat] = useState(null)
   const [groupName, setGroupName] = useState("")
   const [groupList, setGroupList] = useState([])
-
-  const baseURL = import.meta.env.VITE_API_BASE_URL
-  const token = JSON.parse(localStorage.getItem("auth"))?.token
+  const [topicsMap, setTopicsMap] = useState({})
+  const [newTopic, setNewTopic] = useState("")
+  const [activeGroupForTopic, setActiveGroupForTopic] = useState(null)
 
   const activeMenu = sidebarItems.find((item) => item.active)?.label
 
@@ -45,9 +61,7 @@ export default function CreatorInsightsDashboard() {
   const fetchModel = async () => {
     try {
       const res = await axios.get(`${baseURL}/model/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       })
       setModelInfo(res.data)
     } catch (err) {
@@ -58,37 +72,83 @@ export default function CreatorInsightsDashboard() {
   const fetchGroups = async () => {
     try {
       const res = await axios.get(`${baseURL}/messages/group`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       })
       setGroupList(res.data)
+
+      const topicsObj = {}
+      for (const group of res.data) {
+        const topicRes = await axios.get(`${baseURL}/topic/group/${group._id}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        topicsObj[group._id] = topicRes.data
+      }
+      setTopicsMap(topicsObj)
     } catch (err) {
-      console.error("Failed to fetch groups:", err)
+      console.error("Failed to fetch groups/topics:", err)
     }
   }
 
   const handleCreateGroup = async () => {
     if (!groupName.trim()) return
     try {
-      const res = await axios.post(
+      await axios.post(
         `${baseURL}/messages/group/create`,
         {
           title: groupName,
           modelId: id,
-          // employeeId: null // (optional for future)
+          creatorModel: "Agency",
         },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+        { headers: { Authorization: `Bearer ${token}` } }
       )
       setGroupName("")
-      setGroupList([...groupList, res.data])
-      setSelectedChat({ type: "group", id: res.data._id })
+      fetchGroups()
     } catch (err) {
       console.error("Failed to create group:", err)
+    }
+  }
+
+  const handleCreateTopic = async (groupId) => {
+    if (!newTopic.trim()) return
+    try {
+      await axios.post(
+        `${baseURL}/topic/create`,
+        {
+          title: newTopic,
+          groupId,
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
+      )
+      setNewTopic("")
+      setActiveGroupForTopic(null)
+      fetchGroups()
+    } catch (err) {
+      console.error("Failed to create topic:", err)
+    }
+  }
+
+  const handleDeleteTopic = async (topicId) => {
+    if (!confirm("Are you sure you want to delete this topic?")) return
+    try {
+      await axios.delete(`${baseURL}/api/v1/topic/${topicId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      fetchGroups()
+    } catch (err) {
+      console.error("Failed to delete topic:", err)
+    }
+  }
+
+  const handleDeleteGroup = async (groupId) => {
+    if (!confirm("Are you sure you want to delete this group?")) return
+    try {
+      await axios.delete(`${baseURL}/messages/group/${groupId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      fetchGroups()
+      setSelectedChat(null)
+    } catch (err) {
+      console.error("Failed to delete group:", err)
     }
   }
 
@@ -134,17 +194,9 @@ export default function CreatorInsightsDashboard() {
       </div>
 
       {/* Main Content */}
-      {!activeMenu && (
-        <div className="flex-1 h-[87.2vh] overflow-y-auto scrollbar-none p-6">
-          <h1 className="text-2xl font-bold mb-4">Creator Insights Dashboard</h1>
-          <p className="text-gray-400">Select a menu item to begin.</p>
-        </div>
-      )}
-
-      {/* Messenger Section */}
-      {activeMenu === "Messenger" && (
-        <div className="flex-1 h-[87.2vh] overflow-y-auto scrollbar-none p-6">
-          {!selectedChat && (
+      <div className="flex-1 h-[87.2vh] overflow-y-auto scrollbar-none p-6">
+        {activeMenu === "Messenger" ? (
+          !selectedChat ? (
             <>
               <div className="flex items-center mb-4">
                 <input
@@ -163,15 +215,84 @@ export default function CreatorInsightsDashboard() {
                 </button>
               </div>
 
-              <div className="space-y-2">
+              <div className="space-y-4">
                 <h2 className="text-xl font-bold mb-2">Group Chats</h2>
                 {groupList.map((group) => (
-                  <div
-                    key={group._id}
-                    className="p-3 bg-gray-800 rounded cursor-pointer hover:bg-gray-700"
-                    onClick={() => setSelectedChat({ type: "group", id: group._id })}
-                  >
-                    {group.title}
+                  <div key={group._id} className="bg-gray-800 rounded-lg p-3">
+                    <div className="flex items-center justify-between">
+                      <div
+                        onClick={() => {
+                          if (!group.hasTopics) {
+                            const general = topicsMap[group._id]?.find(t => t.title.toLowerCase() === "#general")
+                            setSelectedChat({
+                              type: "group",
+                              groupId: group._id,
+                              topicId: general?._id || null,
+                            })
+                          }
+                        }}
+                        className="cursor-pointer text-lg font-medium"
+                      >
+                        {group.title}
+                      </div>
+                      <div className="flex gap-2">
+                        {user.role === "agency" && (
+                          <>
+                            <button
+                              onClick={() => {
+                                setActiveGroupForTopic(group._id)
+                              }}
+                              className="text-blue-400 text-xs underline"
+                            >
+                              + Topic
+                            </button>
+                            <button onClick={() => handleDeleteGroup(group._id)} className="text-red-500">
+                              <Trash2 size={18} />
+                            </button>
+                          </>
+                        )}
+                      </div>
+                    </div>
+
+                    {activeGroupForTopic === group._id && (
+                      <div className="ml-2 mt-2 flex gap-2">
+                        <input
+                          type="text"
+                          placeholder="Topic name"
+                          value={newTopic}
+                          onChange={(e) => setNewTopic(e.target.value)}
+                          className="px-2 py-1 text-sm bg-gray-700 rounded border border-gray-600"
+                        />
+                        <button
+                          onClick={() => handleCreateTopic(group._id)}
+                          className="bg-blue-600 px-2 py-1 rounded text-sm"
+                        >
+                          Create
+                        </button>
+                      </div>
+                    )}
+
+                    {group.hasTopics && (
+                      <div className="ml-4 mt-2 space-y-1">
+                        {topicsMap[group._id]?.map((topic) => (
+                          <div key={topic._id} className="flex items-center justify-between">
+                            <div
+                              onClick={() =>
+                                setSelectedChat({ type: "group", groupId: group._id, topicId: topic._id })
+                              }
+                              className="cursor-pointer text-sm text-blue-400 hover:underline"
+                            >
+                              {topic.title}
+                            </div>
+                            {user.role === "agency" && (
+                              <button onClick={() => handleDeleteTopic(topic._id)} className="text-red-400 text-xs">
+                                Delete
+                              </button>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 ))}
 
@@ -183,13 +304,18 @@ export default function CreatorInsightsDashboard() {
                 </div>
               </div>
             </>
-          )}
-
-          {selectedChat && (
-            <ChatWindow type={selectedChat.type} id={selectedChat.id} />
-          )}
-        </div>
-      )}
+          ) : selectedChat.type === "dm" ? (
+            <ChatWindow type="dm" id={selectedChat.id} />
+          ) : (
+            <ChatWindow type="group" id={selectedChat.groupId} topicId={selectedChat.topicId} />
+          )
+        ) : (
+          <>
+            <h1 className="text-2xl font-bold mb-4">Creator Insights Dashboard</h1>
+            <p className="text-gray-400">Select a menu item to begin.</p>
+          </>
+        )}
+      </div>
     </div>
   )
 }

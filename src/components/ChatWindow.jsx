@@ -1,39 +1,48 @@
-"use client"
-
 import { useState, useEffect, useRef } from "react"
 import socket from "../utils/socket"
 import axios from "axios"
-import { Send, Loader2 } from "lucide-react"
+import { Send, Loader2, Smile } from "lucide-react"
+import Picker from "emoji-picker-react"
 
-const ChatWindow = ({ id, type }) => {
+const ChatWindow = ({ id, type, topicId }) => {
   const user = JSON.parse(localStorage.getItem("auth"))?.user
+  const token = JSON.parse(localStorage.getItem("auth"))?.token
+  const baseURL = import.meta.env.VITE_API_BASE_URL
+
   const [messages, setMessages] = useState([])
   const [text, setText] = useState("")
   const [isLoading, setIsLoading] = useState(true)
   const [isSending, setIsSending] = useState(false)
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false)
   const messagesEndRef = useRef(null)
   const [isNearBottom, setIsNearBottom] = useState(true)
 
-  // Load previous messages
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+  }
+
   useEffect(() => {
     const fetchMessages = async () => {
       try {
         setIsLoading(true)
-        const token = JSON.parse(localStorage.getItem("auth"))?.token
         let url = ""
 
         if (type === "dm") {
           url = `/messages/agency-to-model?user1Id=${user._id}&user2Id=${id}`
         } else if (type === "group") {
-          url = `/messages/group/messages/${id}`
+          if (topicId) {
+            url = `/messages/group/${id}/topic/${topicId}`
+          } else {
+            url = `/messages/group/messages/${id}`
+          }
         }
 
-        const res = await axios.get(import.meta.env.VITE_API_BASE_URL + url, {
+        const res = await axios.get(baseURL + url, {
           headers: { Authorization: `Bearer ${token}` },
         })
 
         setMessages(res.data)
-        setTimeout(() => messagesEndRef.current?.scrollIntoView({ behavior: "instant" }), 100)
+        setTimeout(scrollToBottom, 100)
       } catch (err) {
         console.error("❌ Error fetching messages:", err)
       } finally {
@@ -42,82 +51,77 @@ const ChatWindow = ({ id, type }) => {
     }
 
     if (id && type) fetchMessages()
-  }, [id, type])
+  }, [id, type, topicId])
 
-  // Scroll tracking
-  const checkScrollPosition = (e) => {
-    const { scrollTop, scrollHeight, clientHeight } = e.target
-    const nearBottom = scrollHeight - scrollTop - clientHeight < 100
-    setIsNearBottom(nearBottom)
-  }
-
-  // Socket Events
   useEffect(() => {
+    const room = topicId || id
+
     if (type === "group") {
-      socket.emit("join_room", { room: id })
+      socket.emit("join_topic", { topicId: topicId })
 
       socket.on("new_group_message", (msg) => {
-        if (msg.groupId === id || msg.topicId === id) {
+        const isSameGroup = msg.groupId === id
+        const isSameTopic =
+          (msg.topicId && msg.topicId === topicId) || (!msg.topicId && !topicId)
+
+        if (isSameGroup && isSameTopic) {
           setMessages((prev) => [...prev, msg])
-          if (isNearBottom) {
-            setTimeout(() => messagesEndRef.current?.scrollIntoView({ behavior: "smooth" }), 100)
-          }
+          if (isNearBottom) setTimeout(scrollToBottom, 100)
         }
       })
 
       return () => {
-        socket.emit("leave_room", { room: id })
+        socket.emit("leave_topic", { topicId: topicId })
         socket.off("new_group_message")
       }
     }
 
     if (type === "dm") {
       socket.on("receive_message_agency_model", (msg) => {
-        if (
+        const isRelevant =
           (msg.senderId === user._id && msg.receiverId === id) ||
           (msg.senderId === id && msg.receiverId === user._id)
-        ) {
+
+        if (isRelevant) {
           setMessages((prev) => [...prev, msg])
-          if (isNearBottom) {
-            setTimeout(() => messagesEndRef.current?.scrollIntoView({ behavior: "smooth" }), 100)
-          }
+          if (isNearBottom) setTimeout(scrollToBottom, 100)
         }
       })
 
       return () => socket.off("receive_message_agency_model")
     }
-  }, [id, type, isNearBottom])
+  }, [id, type, topicId, isNearBottom])
 
   const handleSendMessage = () => {
     if (!text.trim() || isSending) return
     setIsSending(true)
 
-    const newMessage = {
+    const messagePayload = {
       senderId: user._id,
       text: text.trim(),
       createdAt: new Date(),
     }
 
     if (type === "dm") {
-      Object.assign(newMessage, {
+      Object.assign(messagePayload, {
         receiverId: id,
         senderModel: user.role === "agency" ? "Agency" : "ModelUser",
         receiverModel: user.role === "agency" ? "ModelUser" : "Agency",
       })
-      socket.emit("send_message_agency_model", newMessage)
+      socket.emit("send_message_agency_model", messagePayload)
     } else if (type === "group") {
-      Object.assign(newMessage, {
+      Object.assign(messagePayload, {
         groupId: id,
+        topicId: topicId || null,
         senderModel: user.role === "agency" ? "Agency" : "ModelUser",
       })
-      socket.emit("send_group_message", newMessage)
+      socket.emit("send_group_message", messagePayload)
     }
 
-    setMessages((prev) => [...prev, newMessage])
+    setMessages((prev) => [...prev, { ...messagePayload }])
     setText("")
     setIsSending(false)
-
-    setTimeout(() => messagesEndRef.current?.scrollIntoView({ behavior: "smooth" }), 100)
+    setTimeout(scrollToBottom, 100)
   }
 
   const handleKeyPress = (e) => {
@@ -127,36 +131,40 @@ const ChatWindow = ({ id, type }) => {
     }
   }
 
-  const formatTime = (date) => {
-    const messageDate = new Date(date)
-    return messageDate.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+  const checkScrollPosition = (e) => {
+    const { scrollTop, scrollHeight, clientHeight } = e.target
+    const nearBottom = scrollHeight - scrollTop - clientHeight < 100
+    setIsNearBottom(nearBottom)
   }
 
-  if (isLoading) {
-    return (
-      <div className="flex flex-col h-full bg-gray-900 text-white">
-        <div className="flex-1 flex items-center justify-center">
-          <div className="flex items-center gap-2">
-            <Loader2 className="h-5 w-5 animate-spin" />
-            <span>Loading messages...</span>
-          </div>
-        </div>
-      </div>
-    )
+  const formatTime = (date) => {
+    const d = new Date(date)
+    return d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
   }
 
   return (
-    <div className="flex flex-col h-full bg-gray-900 text-white">
+    <div className="flex flex-col h-full bg-gray-900 text-white relative">
       {/* Chat Messages */}
-      <div className="flex-1 p-4 overflow-y-auto scrollbar-none scroll-smooth" onScroll={checkScrollPosition}>
+      <div
+        className="flex-1 p-4 overflow-y-auto scrollbar-none scroll-smooth"
+        onScroll={checkScrollPosition}
+      >
         <div className="space-y-4">
-          {messages.length === 0 ? (
+          {isLoading ? (
+            <div className="flex items-center justify-center h-32 text-gray-400">
+              <Loader2 className="h-5 w-5 animate-spin mr-2" />
+              <span>Loading messages...</span>
+            </div>
+          ) : messages.length === 0 ? (
             <div className="flex items-center justify-center h-32 text-gray-400">
               <p>No messages yet. Start the conversation!</p>
             </div>
           ) : (
             messages.map((msg, i) => {
-              const isOwn = msg.senderId === user._id
+              const isOwn =
+                (msg.senderId && typeof msg.senderId === "object"
+                  ? msg.senderId._id
+                  : msg.senderId) === user._id
               return (
                 <div key={i} className={`flex ${isOwn ? "justify-end" : "justify-start"}`}>
                   <div
@@ -179,9 +187,26 @@ const ChatWindow = ({ id, type }) => {
         </div>
       </div>
 
-      {/* Chat Input */}
+      {/* Emoji Picker */}
+      {showEmojiPicker && (
+        <div className="absolute bottom-20 left-4 z-50">
+          <Picker
+            theme="dark"
+            onEmojiClick={(emojiData) => setText((prev) => prev + emojiData.emoji)}
+          />
+        </div>
+      )}
+
+      {/* Input */}
       <div className="border-t border-gray-700 p-4">
         <div className="flex items-end gap-2">
+          <button
+            onClick={() => setShowEmojiPicker((prev) => !prev)}
+            className="text-gray-300 hover:text-white"
+          >
+            <Smile className="w-8 h-8 mb-1" />
+          </button>
+
           <input
             type="text"
             placeholder="Type your message..."
@@ -191,6 +216,7 @@ const ChatWindow = ({ id, type }) => {
             disabled={isSending}
             className="flex-1 px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:opacity-50"
           />
+
           <button
             onClick={handleSendMessage}
             disabled={!text.trim() || isSending}
