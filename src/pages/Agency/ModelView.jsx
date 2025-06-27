@@ -16,6 +16,8 @@ import {
   Trash2,
 } from "lucide-react"
 import ChatWindow from "../../components/ChatWindow"
+import CreateTask from "../../components/task/CreateTask"
+import TaskList from '../../components/task/TaskList'
 
 export default function CreatorInsightsDashboard() {
   const { id } = useParams()
@@ -71,7 +73,7 @@ export default function CreatorInsightsDashboard() {
 
   const fetchGroups = async () => {
     try {
-      const res = await axios.get(`${baseURL}/messages/group`, {
+      const res = await axios.get(`${baseURL}/messages/group?modelId=${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       setGroupList(res.data)
@@ -309,7 +311,9 @@ export default function CreatorInsightsDashboard() {
           ) : (
             <ChatWindow type="group" id={selectedChat.groupId} topicId={selectedChat.topicId} />
           )
-        ) : (
+        ) : activeMenu === "Tasks" ? (
+    <TaskList modelId={id} />
+  ): (
           <>
             <h1 className="text-2xl font-bold mb-4">Creator Insights Dashboard</h1>
             <p className="text-gray-400">Select a menu item to begin.</p>

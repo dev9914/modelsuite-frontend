@@ -9,28 +9,32 @@ import Home from './pages/Home/Home'
 import CreatorInsightsDashboard from './pages/Agency/ModelView'
 import AgencyLayout from './layouts/AgencyLayout' // ⬅️ Layout that wraps Sidebar + Outlet
 import ModelLayout from './layouts/ModelLayout'
+import ProtectedRoute from './utils/ProtectedRoute'
 function App() {
   return (
     <Routes>
-      {/* Pages without sidebar */}
-      <Route path="/" element={<Home />} />
-      <Route path="/model/login" element={<Login />} />
-      <Route path="/model/register" element={<Register />} />
-      <Route path="/agency/login" element={<AgencyLogin />} />
-      <Route path="/agency/register" element={<AgencyRegister />} />
+  {/* Public routes */}
+  <Route path="/" element={<Home />} />
+  <Route path="/model/login" element={<Login />} />
+  <Route path="/model/register" element={<Register />} />
+  <Route path="/agency/login" element={<AgencyLogin />} />
+  <Route path="/agency/register" element={<AgencyRegister />} />
 
-      {/* Pages with sidebar using Layout */}
-      <Route element={<ModelLayout />}>
-        <Route path="/model/dashboard" element={<ModelDashboard />} />
-        {/* <Route path="/agency/messages" element={<ComingSoon />} /> */}
-      </Route>
+  {/* Protected model routes */}
+  <Route element={<ProtectedRoute allowedRole="model" />}>
+    <Route element={<ModelLayout />}>
+      <Route path="/model/dashboard" element={<ModelDashboard />} />
+    </Route>
+  </Route>
 
-      <Route element={<AgencyLayout />}>
-        <Route path="/agency/dashboard" element={<AgencyDashboard />} />
-        <Route path="/agency/model-view/:id" element={<CreatorInsightsDashboard />} />
-        {/* <Route path="/agency/messages/:id" element={<ChatWindow />} /> */}
-      </Route>
-    </Routes>
+  {/* Protected agency routes */}
+  <Route element={<ProtectedRoute allowedRole="agency" />}>
+    <Route element={<AgencyLayout />}>
+      <Route path="/agency/dashboard" element={<AgencyDashboard />} />
+      <Route path="/agency/model-view/:id" element={<CreatorInsightsDashboard />} />
+    </Route>
+  </Route>
+</Routes>
   )
 }
 

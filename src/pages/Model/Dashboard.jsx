@@ -10,6 +10,7 @@ import {
   Settings,
   Plus,
 } from "lucide-react";
+import ModelTaskList from "../../components/task/ModelTask";
 
 export default function ModelDashboard() {
   const user = JSON.parse(localStorage.getItem("auth"))?.user;
@@ -29,7 +30,7 @@ export default function ModelDashboard() {
 
   const fetchGroupsAndTopics = async () => {
     try {
-      const res = await axios.get(`${baseURL}/messages/group`, {
+      const res = await axios.get(`${baseURL}/messages/group?modelId=${user._id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setGroupList(res.data);
@@ -80,6 +81,15 @@ export default function ModelDashboard() {
             >
               <Calendar className="w-5 h-5 mr-2" />
               Calendar
+            </button>
+            <button
+              onClick={() => handleTabChange("Tasks")}
+              className={`w-full flex items-center px-3 py-2 rounded ${
+                activeTab === "Tasks" ? "bg-blue-600" : "hover:bg-gray-800"
+              }`}
+            >
+              <Calendar className="w-5 h-5 mr-2" />
+              Tasks
             </button>
             <button
               onClick={() => handleTabChange("Team")}
@@ -173,6 +183,8 @@ export default function ModelDashboard() {
               </div>
             </>
           )
+        ): activeTab === "Tasks" ? (
+          <ModelTaskList />
         ) : (
           <div className="text-gray-400">Coming Soon: {activeTab}</div>
         )}
