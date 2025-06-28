@@ -1,103 +1,104 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
-import { toast } from "react-toastify";
+import TaskDetails from "./TaskDetails";
 
 const ModelTaskList = () => {
   const [tasks, setTasks] = useState([]);
-  const [onHoldReasons, setOnHoldReasons] = useState({});
-  const user = JSON.parse(localStorage.getItem("auth"));
+  const [selectedTaskId, setSelectedTaskId] = useState(null);
 
-  useEffect(() => {
-    fetchTasks();
-  }, []);
+  const user = JSON.parse(localStorage.getItem("auth"));
+  const token = user?.token;
 
   const fetchTasks = async () => {
     try {
       const res = await axios.get(
         `${import.meta.env.VITE_API_BASE_URL}/tasks/model/${user.user.agencyId}`,
         {
-          headers: { Authorization: `Bearer ${user.token}` },
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
-      setTasks(res.data);
+      setTasks(res.data); // model sees only their tasks
     } catch (err) {
-      toast.error("Failed to load tasks");
+      console.error("Error fetching model tasks:", err);
     }
   };
 
-  const handleUpdate = async (taskId, status) => {
-    try {
-      const body = { status };
-      if (status === "On Hold") {
-        body.onHoldReason = onHoldReasons[taskId] || "";
-      }
-
-      await axios.put(
-        `${import.meta.env.VITE_API_BASE_URL}/tasks/update-status/${taskId}`,
-        body,
-        {
-          headers: { Authorization: `Bearer ${user.token}` },
-        }
-      );
-      toast.success("Task updated");
-      fetchTasks();
-    } catch (err) {
-      toast.error("Update failed");
-    }
-  };
+  useEffect(() => {
+    fetchTasks();
+  }, []);
 
   return (
-    <div>
-      <h2 className="text-2xl font-bold mb-4">Assigned Tasks</h2>
-      {tasks.map((task) => (
-        <div
-          key={task._id}
-          className="bg-gray-800 rounded p-4 mb-4 shadow border border-gray-700"
-        >
-          <div className="flex justify-between items-center">
-            <h3 className="text-lg font-semibold">#{task.number}</h3>
-            <span className="text-sm text-yellow-300">{task.status}</span>
+    <div className="text-white w-full">
+      <h2 className="text-xl font-bold mb-4">My Tasks</h2>
+
+      {!selectedTaskId ? (
+        tasks.length === 0 ? (
+          <p className="text-gray-400">No tasks assigned to you yet.</p>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="min-w-full border border-gray-700 text-sm">
+              <thead className="bg-gray-800 text-gray-300">
+                <tr>
+                  <th className="p-2 border border-gray-700">Number</th>
+                  <th className="p-2 border border-gray-700">Category</th>
+                  <th className="p-2 border border-gray-700">Priority</th>
+                  <th className="p-2 border border-gray-700">Status</th>
+                  <th className="p-2 border border-gray-700">Short Description</th>
+                  <th className="p-2 border border-gray-700">Opened</th>
+                </tr>
+              </thead>
+              <tbody>
+                {tasks.map((task) => (
+                  <tr
+                    key={task._id}
+                    onClick={() => setSelectedTaskId(task._id)}
+                    className="hover:bg-gray-700 cursor-pointer"
+                  >
+                    <td className="p-2 border border-gray-700 text-blue-400 underline">
+                      {task.number}
+                    </td>
+                    <td className="p-2 border border-gray-700">{task.category}</td>
+                    <td className="p-2 border border-gray-700">
+                      {{
+                        1: "1 - Urgency",
+                        2: "2 - High",
+                        3: "3 - Medium",
+                        4: "4 - Low",
+                        5: "5 - Planning",
+                      }[task.priority]}
+                    </td>
+                    <td className="p-2 border border-gray-700">
+                      {{
+                        "In Progress": "🟡 In Progress",
+                        "On Hold": "🔴 On Hold",
+                        "Resolved": "🟢 Resolved",
+                      }[task.status] || task.status}
+                    </td>
+                    <td className="p-2 border border-gray-700">{task.shortDescription}</td>
+                    <td className="p-2 border border-gray-700">
+                      {new Date(task.createdAt).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "short",
+                        day: "numeric",
+                      })}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
-          <p className="mt-1 text-gray-300">{task.shortDescription}</p>
-
-          {task.status === "In Progress" && (
-            <div className="mt-3 space-x-2">
-              <button
-                className="bg-green-600 hover:bg-green-700 px-3 py-1 rounded text-white"
-                onClick={() => handleUpdate(task._id, "Resolved")}
-              >
-                Mark Resolved
-              </button>
-<button
-  className={`px-3 py-1 rounded text-white ${onHoldReasons[task._id]?.trim()
-    ? 'bg-yellow-500 hover:bg-yellow-600'
-    : 'bg-yellow-300 cursor-not-allowed'}`}
-  onClick={() => handleUpdate(task._id, "On Hold")}
-  disabled={!onHoldReasons[task._id]?.trim()}
->
-  On Hold
-</button>
-              <input
-                type="text"
-                placeholder="Reason for hold"
-                className="mt-2 block w-full bg-gray-700 px-2 py-1 text-white rounded"
-                onChange={(e) =>
-                  setOnHoldReasons((prev) => ({
-                    ...prev,
-                    [task._id]: e.target.value,
-                  }))
-                }
-              />
-            </div>
-          )}
-
-          {task.status === "On Hold" && (
-            <p className="text-red-400 mt-2 text-sm">
-              Reason: {task.onHoldReason}
-            </p>
-          )}
+        )
+      ) : (
+        <div className="relative bg-gray-800 rounded p-6 shadow-md mt-6">
+          <button
+            onClick={() => setSelectedTaskId(null)}
+            className="absolute top-3 right-3 text-sm bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded"
+          >
+            Close
+          </button>
+          <TaskDetails taskId={selectedTaskId} />
         </div>
-      ))}
+      )}
     </div>
   );
 };
