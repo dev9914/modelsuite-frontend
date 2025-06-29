@@ -9,6 +9,7 @@ const TaskDetails = ({ taskId }) => {
   const [file, setFile] = useState(null);
   const [status, setStatus] = useState("");
   const [onHoldReason, setOnHoldReason] = useState("");
+  const [uploading, setUploading] = useState(false);
 
   const user = JSON.parse(localStorage.getItem("auth"));
   const token = user?.token;
@@ -56,40 +57,34 @@ const TaskDetails = ({ taskId }) => {
     }
   };
 
-  const handleFileUpload = async () => {
-    if (!file) return;
-    const formData = new FormData();
-    formData.append("file", file);
+const handleFileUpload = async () => {
+  if (!file) return;
 
-    try {
-      const res = await axios.post(
-        `${import.meta.env.VITE_API_BASE_URL}/attachment/upload`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+  const formData = new FormData();
+  formData.append("file", file);
 
-      // Save attachment metadata to task
-      await axios.post(
-        `${import.meta.env.VITE_API_BASE_URL}/tasks/${taskId}/attachments`,
-        res.data,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+  try {
+    setUploading(true);
+    // Single POST request to upload + save metadata
+    await axios.post(
+      `${import.meta.env.VITE_API_BASE_URL}/tasks/${taskId}/attachments`,
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
 
-      setFile(null);
-      fetchTask(); // refresh to get updated attachment list
-    } catch (err) {
-      console.error("❌ Upload failed:", err);
-    }
-  };
+    setFile(null);
+    fetchTask(); // Refresh to load new attachment list
+  } catch (err) {
+    console.error("❌ Upload failed:", err);
+  } finally {
+    setUploading(false);
+  }
+};
 
   const handleStatusUpdate = async () => {
     try {
@@ -171,51 +166,98 @@ const TaskDetails = ({ taskId }) => {
               className="bg-gray-700 p-2 rounded w-full"
             />
             <button
-              onClick={handleFileUpload}
-              className="mt-2 px-4 py-2 bg-green-600 hover:bg-green-700 rounded"
-            >
-              Upload
-            </button>
+  onClick={handleFileUpload}
+  disabled={uploading || !file}
+  className={`px-4 py-2 rounded ${
+    uploading
+      ? "bg-gray-500 cursor-not-allowed"
+      : "bg-green-600 hover:bg-green-700"
+  } text-white`}
+>
+  {uploading ? "Uploading..." : "Upload"}
+</button>
           </div>
         </>
       )}
 
       {/* 📎 Attachments view for all roles */}
-      {attachments.length > 0 && (
-        <div className="mb-4">
-          <h3 className="font-semibold mb-2">Attachments</h3>
-          <ul className="space-y-2">
-            {attachments.map((file, idx) => (
-              <li key={idx}>
-                {file.type === "application/pdf" ? (
-                  <iframe
-                    src={file.url}
-                    width="100%"
-                    height="400"
-                    title={`PDF-${idx}`}
-                    className="rounded border border-gray-600"
-                  />
-                ) : file.type.startsWith("image/") ? (
-                  <img
-                    src={file.url}
-                    alt="Attachment"
-                    className="max-h-64 rounded border border-gray-600"
-                  />
-                ) : (
-                  <a
-                    href={file.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-400 underline"
-                  >
-                    📄 {file.originalName || "Download"}
-                  </a>
-                )}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+{attachments.length > 0 && (
+  <div className="mb-4">
+    <h3 className="font-semibold mb-2">Attachments</h3>
+    <ul className="space-y-4">
+      {attachments.map((file, idx) => {
+        const isPDF = file.type === "application/pdf";
+        const isImage = file.type.startsWith("image/");
+        const isVideo = file.type.startsWith("video/");
+        
+        // Modify preview URL for PDFs to avoid auto-download and allow preview
+        const previewUrl = isPDF
+          ? file.url.replace("/upload/", "/upload/fl_attachment:false/")
+          : file.url;
+
+        return (
+          <li key={idx} className="border border-gray-600 rounded p-3 bg-gray-900">
+            <div className="mb-2">
+              {isPDF ? (
+              <iframe
+  src={`https://docs.google.com/gview?url=${encodeURIComponent(file.url)}&embedded=true`}
+  width="100%"
+  height="300"
+  title={`PDF-${idx}`}
+  className="rounded"
+/>
+
+              ) : isImage ? (
+                <img
+                  src={previewUrl}
+                  alt={file.originalName || "Attachment"}
+                  className="max-h-64 rounded"
+                />
+              ) : isVideo ? (
+                <video
+                  src={previewUrl}
+                  controls
+                  className="w-full max-h-72 rounded"
+                />
+              ) : (
+                <p className="text-white">📄 {file.originalName || "Document"}</p>
+              )}
+            </div>
+
+            <div className="flex gap-4">
+              {!isPDF ? (
+                <a
+                href={previewUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
+              >
+                View
+              </a>
+              ): (
+                <button
+  onClick={() =>
+    window.open(
+      `https://docs.google.com/gview?url=${encodeURIComponent(file.url)}&embedded=true`,
+      '_blank',
+      'noopener,noreferrer'
+    )
+  }
+  className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
+>
+  View
+</button>
+              )}
+              
+            </div>
+          </li>
+        );
+      })}
+    </ul>
+  </div>
+)}
+
+
 
       {/* 💬 Comments Section */}
       <div className="mt-6">
