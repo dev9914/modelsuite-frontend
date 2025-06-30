@@ -85,42 +85,42 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-100">
-      <nav className="bg-white shadow-md py-4 px-6 flex justify-between items-center">
-        <h1 className="text-xl font-bold text-gray-800">ModelSuite</h1>
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-gray-950 to-gray-900 text-white">
+      <nav className="bg-gray-900 border-b border-gray-800 shadow-md py-4 px-8 flex justify-between items-center">
+        <h1 className="text-2xl font-extrabold tracking-tight text-white">ModelSuite</h1>
         <div className="space-x-4">
-          <Link to="/model/login" className="text-blue-600 hover:underline font-medium">Model Login</Link>
-          <Link to="/model/register" className="text-blue-600 hover:underline font-medium">Model Register</Link>
-          <Link to="/agency/login" className="text-green-600 hover:underline font-medium">Agency Login</Link>
-          <Link to="/agency/register" className="text-green-600 hover:underline font-medium">Agency Register</Link>
+          <Link to="/model/login" className="text-blue-400 hover:text-blue-200 font-semibold transition">Model Login</Link>
+          <Link to="/model/register" className="text-blue-400 hover:text-blue-200 font-semibold transition">Model Register</Link>
+          <Link to="/agency/login" className="text-green-400 hover:text-green-200 font-semibold transition">Agency Login</Link>
+          <Link to="/agency/register" className="text-green-400 hover:text-green-200 font-semibold transition">Agency Register</Link>
         </div>
       </nav>
 
       <div className="flex-grow flex items-center justify-center px-4">
-        <div className="bg-white shadow-lg rounded-xl p-8 w-full max-w-xl">
-          <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">Agency Registration</h2>
+        <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl shadow-lg p-8 w-full max-w-xl border-t-4 border-green-500">
+          <h2 className="text-3xl font-extrabold text-center text-white mb-6 drop-shadow-sm">Agency Registration</h2>
 
-          {error && <p className="text-red-500 text-sm text-center mb-4">{error}</p>}
-          {success && <p className="text-green-500 text-sm text-center mb-4">{success}</p>}
+          {error && <p className="text-red-400 text-sm text-center mb-4">{error}</p>}
+          {success && <p className="text-green-400 text-sm text-center mb-4">{success}</p>}
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            <input type="text" name="agencyName" value={formData.agencyName} onChange={handleChange} placeholder="Agency Name" className="input" />
-            <input type="email" name="agencyEmail" value={formData.agencyEmail} onChange={handleChange} placeholder="Agency Email" className="input" />
-            <input type="text" name="website" value={formData.website} onChange={handleChange} placeholder="Website (optional)" className="input" />
+            <input type="text" name="agencyName" value={formData.agencyName} onChange={handleChange} placeholder="Agency Name" className="input bg-gray-800 border border-gray-700 text-white placeholder-gray-400" />
+            <input type="email" name="agencyEmail" value={formData.agencyEmail} onChange={handleChange} placeholder="Agency Email" className="input bg-gray-800 border border-gray-700 text-white placeholder-gray-400" />
+            <input type="text" name="website" value={formData.website} onChange={handleChange} placeholder="Website (optional)" className="input bg-gray-800 border border-gray-700 text-white placeholder-gray-400" />
 
             <div className="flex items-center gap-2">
-              <span className="px-3 py-2 bg-gray-200 border border-gray-300 rounded-md">{countryCode}</span>
-              <input type="tel" name="phone" value={formData.phone} onChange={handleChange} placeholder="Phone number" className="input flex-1" />
+              <span className="px-3 py-2 bg-gray-700 border border-gray-700 rounded-md text-white">{countryCode}</span>
+              <input type="tel" name="phone" value={formData.phone} onChange={handleChange} placeholder="Phone number" className="input flex-1 bg-gray-800 border border-gray-700 text-white placeholder-gray-400" />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <select name="country" value={formData.country} onChange={handleChange} className="input">
+              <select name="country" value={formData.country} onChange={handleChange} className="input bg-gray-800 border border-gray-700 text-white">
                 <option value="">Select Country</option>
                 {countries.map((c, idx) => (
                   <option key={idx} value={c.name}>{c.name}</option>
                 ))}
               </select>
-              <select name="city" value={formData.city} onChange={handleChange} className="input">
+              <select name="city" value={formData.city} onChange={handleChange} className="input bg-gray-800 border border-gray-700 text-white">
                 <option value="">Select City</option>
                 {cities.map((city, idx) => (
                   <option key={idx} value={city}>{city}</option>
@@ -128,7 +128,7 @@ const Register = () => {
               </select>
             </div>
 
-            <select name="category" value={formData.category} onChange={handleChange} className="input">
+            <select name="category" value={formData.category} onChange={handleChange} className="input bg-gray-800 border border-gray-700 text-white">
               <option value="">Select Category</option>
               {categories.map((cat, idx) => (
                 <option key={idx} value={cat}>{cat}</option>
@@ -136,13 +136,13 @@ const Register = () => {
             </select>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <select name="companySize" value={formData.companySize} onChange={handleChange} className="input">
+              <select name="companySize" value={formData.companySize} onChange={handleChange} className="input bg-gray-800 border border-gray-700 text-white">
                 <option value="">Company Size</option>
                 {companySizes.map((size, idx) => (
                   <option key={idx} value={size}>{size}</option>
                 ))}
               </select>
-              <select name="agencyType" value={formData.agencyType} onChange={handleChange} className="input">
+              <select name="agencyType" value={formData.agencyType} onChange={handleChange} className="input bg-gray-800 border border-gray-700 text-white">
                 <option value="">Agency Type</option>
                 {agencyTypes.map((type, idx) => (
                   <option key={idx} value={type}>{type}</option>
@@ -150,9 +150,9 @@ const Register = () => {
               </select>
             </div>
 
-            <input type="text" name="socialLink" value={formData.socialLink} onChange={handleChange} placeholder="Social Media URL" className="input" />
+            <input type="text" name="socialLink" value={formData.socialLink} onChange={handleChange} placeholder="Social Media URL" className="input bg-gray-800 border border-gray-700 text-white placeholder-gray-400" />
 
-            <input type="file" accept="image/*" className="input text-sm" onChange={async (e) => {
+            <input type="file" accept="image/*" className="input text-sm bg-gray-800 border border-gray-700 text-white" onChange={async (e) => {
                 const file = e.target.files[0];
                 if (file) {
                   const imageUrl = await uploadToCloudinary(file);
@@ -160,23 +160,27 @@ const Register = () => {
                 }
               }} />
 
-            <input type="text" name="username" value={formData.username} onChange={handleChange} placeholder="Username" className="input" />
-            <input type="password" name="password" value={formData.password} onChange={handleChange} placeholder="Password" className="input" />
-            <input type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} placeholder="Confirm Password" className="input" />
+            <input type="text" name="username" value={formData.username} onChange={handleChange} placeholder="Username" className="input bg-gray-800 border border-gray-700 text-white placeholder-gray-400" />
+            <input type="password" name="password" value={formData.password} onChange={handleChange} placeholder="Password" className="input bg-gray-800 border border-gray-700 text-white placeholder-gray-400" />
+            <input type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} placeholder="Confirm Password" className="input bg-gray-800 border border-gray-700 text-white placeholder-gray-400" />
 
-            <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">
+            <button type="submit" className="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 font-semibold transition">
               Register
             </button>
           </form>
 
-          <p className="text-sm text-center mt-4">
+          <p className="text-sm text-center mt-4 text-gray-300">
             Already have an account?{" "}
-            <Link to="/agency/login" className="text-green-600 hover:underline font-medium">
+            <Link to="/agency/login" className="text-green-400 hover:underline font-medium">
               Login here
             </Link>
           </p>
         </div>
       </div>
+
+      <footer className="mt-auto py-6 text-center text-gray-500 text-sm border-t border-gray-800 bg-gray-900">
+        &copy; {new Date().getFullYear()} ModelSuite. All rights reserved.
+      </footer>
     </div>
   );
 };

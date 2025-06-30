@@ -214,41 +214,49 @@ export default function AgencyDashboard() {
           {/* Top Row Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
             <Card>
-              <CardContent className="p-8 text-center flex flex-col items-center gap-2">
-                <div className="bg-blue-900/40 rounded-full p-3 mb-2"><Users size={28} className="text-blue-400" /></div>
-                <h3 className="text-base font-medium text-gray-300">Total Models</h3>
-                <p className="text-4xl font-extrabold tracking-tight">135</p>
+              <CardContent className="p-8 flex flex-col gap-4 items-start justify-center h-full">
+                <div className="flex items-center gap-3 mb-2">
+                  <span className="bg-blue-900/40 rounded-full p-3 flex items-center justify-center">
+                    <Users size={28} className="text-blue-400" />
+                  </span>
+                  <h3 className="text-base font-medium text-gray-300">Total Models</h3>
+                </div>
+                <p className="text-4xl font-extrabold tracking-tight ml-1">135</p>
               </CardContent>
             </Card>
             <Card>
-              <CardContent className="p-8 flex flex-col gap-2">
-                <div className="bg-blue-900/40 rounded-full p-3 mb-2 w-fit"><TrendingUp size={28} className="text-green-400" /></div>
-                <h3 className="text-base font-medium text-gray-300">Top Performing Model</h3>
-                <div className="flex items-center justify-between mt-2">
-                  <div className="flex items-center gap-3">
+              <CardContent className="p-8 flex flex-col gap-4 items-start justify-center h-full">
+                <div className="flex items-center gap-3 mb-2">
+                  <span className="bg-blue-900/40 rounded-full p-3 flex items-center justify-center">
+                    <TrendingUp size={28} className="text-green-400" />
+                  </span>
+                  <h3 className="text-base font-medium text-gray-300">Top Performing Model</h3>
+                </div>
+                <div className="flex items-center gap-4 mt-2 w-full">
+                  <div className="flex items-center gap-3 min-w-0">
                     <Avatar
-                      src="/placeholder.svg?height=48&width=48"
+                      src={"https://randomuser.me/api/portraits/women/44.jpg"}
                       alt="Victoria Adams"
                       fallback="VA"
                       className="h-12 w-12"
                     />
-                    <span className="font-medium">Victoria Adams</span>
+                    <span className="font-medium truncate text-lg text-white">Victoria Adams</span>
                   </div>
-                  <span className="text-2xl font-bold text-green-400">7.2%</span>
+                  <span className="ml-auto text-2xl font-extrabold text-green-400">7.2%</span>
                 </div>
               </CardContent>
             </Card>
             <Card>
-              <CardContent className="p-8 flex flex-col gap-2">
-                <div className="bg-blue-900/40 rounded-full p-3 mb-2 w-fit"><Globe2 size={28} className="text-blue-300" /></div>
-                <h3 className="text-base font-medium text-gray-300">Most active platform</h3>
-                <div className="flex items-center justify-between mt-2">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
-                      <span className="text-white text-xs font-bold">52%</span>
-                    </div>
-                    <span className="font-medium">Instagram</span>
-                  </div>
+              <CardContent className="p-8 flex flex-col gap-4 items-start justify-center h-full">
+                <div className="flex items-center gap-3 mb-2">
+                  <span className="bg-blue-900/40 rounded-full p-3 flex items-center justify-center">
+                    <Globe2 size={28} className="text-blue-300" />
+                  </span>
+                  <h3 className="text-base font-medium text-gray-300">Most active platform</h3>
+                </div>
+                <div className="flex items-center gap-3 mt-2">
+                  <span className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs font-bold">52%</span>
+                  <span className="font-medium text-white text-lg">Instagram</span>
                 </div>
               </CardContent>
             </Card>

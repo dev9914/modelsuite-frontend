@@ -34,23 +34,23 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-100">
-      <nav className="bg-white shadow-md py-4 px-6 flex justify-between items-center">
-        <h1 className="text-xl font-bold text-gray-800">ModelSuite</h1>
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-gray-950 to-gray-900 text-white">
+      <nav className="bg-gray-900 border-b border-gray-800 shadow-md py-4 px-8 flex justify-between items-center">
+        <h1 className="text-2xl font-extrabold tracking-tight text-white">ModelSuite</h1>
         <div className="space-x-4">
-          <Link to="/model/login" className="text-blue-600 hover:underline font-medium">Model Login</Link>
-          <Link to="/model/register" className="text-blue-600 hover:underline font-medium">Model Register</Link>
-          <Link to="/agency/login" className="text-green-600 hover:underline font-medium">Agency Login</Link>
-          <Link to="/agency/register" className="text-green-600 hover:underline font-medium">Agency Register</Link>
+          <Link to="/model/login" className="text-blue-400 hover:text-blue-200 font-semibold transition">Model Login</Link>
+          <Link to="/model/register" className="text-blue-400 hover:text-blue-200 font-semibold transition">Model Register</Link>
+          <Link to="/agency/login" className="text-green-400 hover:text-green-200 font-semibold transition">Agency Login</Link>
+          <Link to="/agency/register" className="text-green-400 hover:text-green-200 font-semibold transition">Agency Register</Link>
         </div>
       </nav>
 
       <div className="flex-grow flex items-center justify-center px-4">
-        <div className="bg-white shadow-lg rounded-xl p-8 w-full max-w-md">
-          <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">Model Login</h2>
+        <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl shadow-lg p-8 w-full max-w-md border-t-4 border-blue-500">
+          <h2 className="text-3xl font-extrabold text-center text-white mb-6 drop-shadow-sm">Model Login</h2>
 
-          {error && <p className="text-red-500 text-sm text-center mb-4">{error}</p>}
-          {success && <p className="text-green-500 text-sm text-center mb-4">{success}</p>}
+          {error && <p className="text-red-400 text-sm text-center mb-4">{error}</p>}
+          {success && <p className="text-green-400 text-sm text-center mb-4">{success}</p>}
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <input
@@ -59,7 +59,7 @@ const Login = () => {
               value={formData.identifier}
               onChange={handleChange}
               placeholder="Username or Email"
-              className="input"
+              className="input bg-gray-800 border border-gray-700 text-white placeholder-gray-400"
             />
             <input
               type="password"
@@ -67,21 +67,25 @@ const Login = () => {
               value={formData.password}
               onChange={handleChange}
               placeholder="Password"
-              className="input"
+              className="input bg-gray-800 border border-gray-700 text-white placeholder-gray-400"
             />
-            <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">
+            <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 font-semibold transition">
               Login
             </button>
           </form>
 
-          <p className="text-sm text-center mt-4">
+          <p className="text-sm text-center mt-4 text-gray-300">
             Don't have an account?{" "}
-            <Link to="/model/register" className="text-blue-600 hover:underline font-medium">
+            <Link to="/model/register" className="text-blue-400 hover:underline font-medium">
               Register here
             </Link>
           </p>
         </div>
       </div>
+
+      <footer className="mt-auto py-6 text-center text-gray-500 text-sm border-t border-gray-800 bg-gray-900">
+        &copy; {new Date().getFullYear()} ModelSuite. All rights reserved.
+      </footer>
     </div>
   );
 };
