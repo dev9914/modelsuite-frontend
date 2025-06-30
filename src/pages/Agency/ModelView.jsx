@@ -190,8 +190,7 @@ export default function CreatorInsightsDashboard() {
               aria-selected={item.active}
               className={`flex items-center gap-3 px-4 py-3 rounded-lg cursor-pointer transition-all duration-150 font-medium text-base items-center select-none outline-none focus:ring-2 focus:ring-blue-400 ${
                 item.active ? "bg-blue-600 shadow text-white border-l-4 border-blue-300" : "hover:bg-gray-800 text-gray-300"
-              }`}
-              style={{overflow: 'hidden'}}
+              } overflow-hidden`}
             >
               <item.icon className="w-5 h-5 flex-shrink-0" />
               <span className="truncate block max-w-[140px] overflow-hidden text-ellipsis">{item.label}</span>
