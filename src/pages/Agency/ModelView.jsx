@@ -314,40 +314,39 @@ export default function CreatorInsightsDashboard() {
               </div>
             </>
           ) : selectedChat.type === "dm" ? (
-            <div className="flex flex-col h-full min-h-[500px]">
-              <div className="flex-1 flex items-center justify-center bg-[#222e35] rounded-3xl border border-[#222e35] shadow-xl p-0">
-                <div className="w-full max-w-2xl h-[70vh] flex flex-col justify-between bg-[#222e35] rounded-3xl overflow-hidden border border-[#222e35]">
+            <div className="flex flex-col h-full min-h-[500px] w-full">
+              <div className="flex-1 flex items-center justify-center w-full h-full">
+                <div className="w-full h-[80vh] flex flex-col justify-between bg-[#222e35] rounded-3xl overflow-hidden border border-[#232e3c] shadow-xl">
                   {/* Header */}
-                  <div className="flex items-center gap-3 px-6 py-4 bg-[#232e3c] border-b border-[#232e3c]">
-                    <div className="w-9 h-9 rounded-full bg-gray-700 flex items-center justify-center text-white font-bold text-lg">{modeinfo.fullName ? modeinfo.fullName[0] : 'U'}</div>
+                  <div className="flex items-center gap-3 px-8 py-5 bg-[#232e3c] border-b border-[#232e3c]" style={{ minHeight: 80 }}>
+                    <div className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center text-white font-bold text-lg">{modeinfo.fullName ? modeinfo.fullName[0] : 'U'}</div>
                     <div>
-                      <div className="font-semibold text-white text-base">{modeinfo.fullName || 'User'}</div>
+                      <div className="font-semibold text-white text-lg">{modeinfo.fullName || 'User'}</div>
                       <div className="text-xs text-gray-400">Direct Message</div>
                     </div>
                   </div>
                   {/* ChatWindow area */}
-                  <div className="flex-1 flex flex-col justify-end px-6 py-4 bg-[#222e35] overflow-y-auto custom-scrollbar">
+                  <div className="flex-1 flex flex-col justify-end px-8 py-6 bg-[#222e35] overflow-y-auto custom-scrollbar" style={{ minHeight: 0 }}>
                     <ChatWindow type="dm" id={selectedChat.id} />
                   </div>
                   {/* Input area (handled by ChatWindow) */}
-                  {/* The input area is now handled by ChatWindow for consistent logic and UI */}
                 </div>
               </div>
             </div>
           ) : (
-            <div className="flex flex-col h-full min-h-[500px]">
-              <div className="flex-1 flex items-center justify-center bg-[#222e35] rounded-3xl border border-[#222e35] shadow-xl p-0">
-                <div className="w-full max-w-2xl h-[70vh] flex flex-col justify-between bg-[#222e35] rounded-3xl overflow-hidden border border-[#222e35]">
+            <div className="flex flex-col h-full min-h-[500px] w-full">
+              <div className="flex-1 flex items-center justify-center w-full h-full">
+                <div className="w-full h-[80vh] flex flex-col justify-between bg-[#222e35] rounded-3xl overflow-hidden border border-[#232e3c] shadow-xl">
                   {/* Header */}
-                  <div className="flex items-center gap-3 px-6 py-4 bg-[#232e3c] border-b border-[#232e3c]">
-                    <div className="w-9 h-9 rounded-full bg-gray-700 flex items-center justify-center text-white font-bold text-lg">G</div>
+                  <div className="flex items-center gap-3 px-8 py-5 bg-[#232e3c] border-b border-[#232e3c]" style={{ minHeight: 80 }}>
+                    <div className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center text-white font-bold text-lg">G</div>
                     <div>
-                      <div className="font-semibold text-white text-base">Group Chat</div>
+                      <div className="font-semibold text-white text-lg">Group Chat</div>
                       <div className="text-xs text-gray-400">Group Conversation</div>
                     </div>
                   </div>
                   {/* ChatWindow area */}
-                  <div className="flex-1 flex flex-col justify-end px-6 py-4 bg-[#222e35] overflow-y-auto custom-scrollbar">
+                  <div className="flex-1 flex flex-col justify-end px-8 py-6 bg-[#222e35] overflow-y-auto custom-scrollbar" style={{ minHeight: 0 }}>
                     <ChatWindow type="group" id={selectedChat.groupId} topicId={selectedChat.topicId} />
                   </div>
                   {/* Input area is handled by ChatWindow for consistent logic and UI */}
