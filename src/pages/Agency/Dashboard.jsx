@@ -1,4 +1,4 @@
-import { Search, Bell, Plus, Settings, HelpCircle, X, Users, TrendingUp, Globe2, AlertCircle } from "lucide-react"
+import { Search, Bell, Plus, Settings, X, Users, TrendingUp, Globe2, AlertCircle } from "lucide-react"
 import { Link } from "react-router-dom"
 import { useState } from "react"
 
