@@ -355,7 +355,17 @@ export default function CreatorInsightsDashboard() {
             </div>
           )
         ) : activeMenu === "Tasks" ? (
-          <div className="bg-gray-900 rounded-xl p-6 shadow border border-gray-800">
+          <div className="bg-gray-900 rounded-2xl p-10 shadow-xl border border-gray-800 w-full max-w-6xl mx-auto flex flex-col min-h-[80vh] relative">
+            <div className="flex items-center justify-between mb-10">
+              <h2 className="text-2xl font-extrabold tracking-tight">Tasks for this Model</h2>
+              <button
+                onClick={() => window.history.back()}
+                className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold shadow border border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all duration-150"
+                style={{ minWidth: 100 }}
+              >
+                Cancel
+              </button>
+            </div>
             <TaskList modelId={id} />
           </div>
         ) : (
