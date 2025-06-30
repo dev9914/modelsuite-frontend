@@ -299,10 +299,10 @@ export default function AgencyDashboard() {
                   <table className="min-w-full text-sm">
                     <thead>
                       <tr className="border-b border-gray-800">
-                        <th className="text-left text-gray-400 font-medium py-2 px-2">Platform</th>
-                        <th className="text-left text-gray-400 font-medium py-2 px-2">Views</th>
-                        <th className="text-left text-gray-400 font-medium py-2 px-2">Followers</th>
-                        <th className="text-left text-gray-400 font-medium py-2 px-2">Posts</th>
+                        <th scope="col" className="text-left text-gray-400 font-medium py-2 px-2">Platform</th>
+                        <th scope="col" className="text-left text-gray-400 font-medium py-2 px-2">Views</th>
+                        <th scope="col" className="text-left text-gray-400 font-medium py-2 px-2">Followers</th>
+                        <th scope="col" className="text-left text-gray-400 font-medium py-2 px-2">Posts</th>
                       </tr>
                     </thead>
                     <tbody>
