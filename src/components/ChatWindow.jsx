@@ -143,13 +143,14 @@ const ChatWindow = ({ id, type, topicId }) => {
   }
 
   return (
-    <div className="flex flex-col h-full bg-gray-900 text-white relative">
+    <div className="flex flex-col h-full w-full bg-[#222e35] text-white relative rounded-3xl overflow-hidden">
       {/* Chat Messages */}
       <div
-        className="flex-1 p-4 overflow-y-auto scrollbar-none scroll-smooth"
+        className="flex-1 px-0 py-0 overflow-y-auto scroll-smooth custom-scrollbar"
         onScroll={checkScrollPosition}
+        style={{ minHeight: 0 }}
       >
-        <div className="space-y-4">
+        <div className="flex flex-col gap-2 px-8 py-6 w-full max-w-full">
           {isLoading ? (
             <div className="flex items-center justify-center h-32 text-gray-400">
               <Loader2 className="h-5 w-5 animate-spin mr-2" />
@@ -166,16 +167,17 @@ const ChatWindow = ({ id, type, topicId }) => {
                   ? msg.senderId._id
                   : msg.senderId) === user._id
               return (
-                <div key={i} className={`flex ${isOwn ? "justify-end" : "justify-start"}`}>
+                <div key={i} className={`flex w-full ${isOwn ? "justify-end" : "justify-start"}`}>
                   <div
-                    className={`max-w-xs lg:max-w-md px-4 py-2 rounded-2xl shadow-sm ${
+                    className={`max-w-[70%] px-5 py-3 rounded-2xl shadow-md text-base break-words whitespace-pre-line ${
                       isOwn
-                        ? "bg-blue-600 text-white rounded-br-md"
-                        : "bg-gray-700 text-gray-100 rounded-bl-md"
+                        ? "bg-blue-600 text-white rounded-br-2xl ml-8"
+                        : "bg-[#232e3c] text-gray-100 rounded-bl-2xl mr-8"
                     }`}
+                    style={{ boxShadow: isOwn ? '0 2px 8px 0 rgba(0, 60, 255, 0.10)' : '0 2px 8px 0 rgba(0,0,0,0.10)' }}
                   >
-                    <p className="text-sm leading-relaxed">{msg.text}</p>
-                    <p className={`text-xs mt-1 ${isOwn ? "text-blue-100" : "text-gray-400"}`}>
+                    <p className="leading-relaxed text-[1rem]">{msg.text}</p>
+                    <p className={`text-xs mt-1 text-right ${isOwn ? "text-blue-100" : "text-gray-400"}`}>
                       {formatTime(msg.createdAt)}
                     </p>
                   </div>
@@ -189,7 +191,7 @@ const ChatWindow = ({ id, type, topicId }) => {
 
       {/* Emoji Picker */}
       {showEmojiPicker && (
-        <div className="absolute bottom-20 left-4 z-50">
+        <div className="absolute bottom-20 left-8 z-50">
           <Picker
             theme="dark"
             onEmojiClick={(emojiData) => setText((prev) => prev + emojiData.emoji)}
@@ -198,13 +200,13 @@ const ChatWindow = ({ id, type, topicId }) => {
       )}
 
       {/* Input */}
-      <div className="border-t border-gray-700 p-4">
-        <div className="flex items-end gap-2">
+      <div className="border-t border-[#232e3c] px-8 py-5 bg-[#232e3c]">
+        <div className="flex items-center gap-3 w-full rounded-2xl bg-[#232e3c] shadow-lg px-4 py-2">
           <button
             onClick={() => setShowEmojiPicker((prev) => !prev)}
-            className="text-gray-300 hover:text-white"
+            className="text-gray-300 hover:text-white focus:outline-none"
           >
-            <Smile className="w-8 h-8 mb-1" />
+            <Smile className="w-7 h-7" />
           </button>
 
           <input
@@ -214,15 +216,16 @@ const ChatWindow = ({ id, type, topicId }) => {
             onChange={(e) => setText(e.target.value)}
             onKeyPress={handleKeyPress}
             disabled={isSending}
-            className="flex-1 px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:opacity-50"
+            className="flex-1 px-5 py-3 bg-[#2a3942] border-none rounded-2xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:opacity-50 text-base shadow-none"
+            style={{ minWidth: 0 }}
           />
 
           <button
             onClick={handleSendMessage}
             disabled={!text.trim() || isSending}
-            className="p-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white rounded-lg transition-colors duration-200 flex items-center justify-center"
+            className={`p-3 rounded-full transition-colors duration-200 flex items-center justify-center shadow ${!text.trim() || isSending ? 'bg-[#3a4651] text-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700 text-white'}`}
           >
-            {isSending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+            {isSending ? <Loader2 className="h-5 w-5 animate-spin" /> : <Send className="h-5 w-5" />}
           </button>
         </div>
       </div>
