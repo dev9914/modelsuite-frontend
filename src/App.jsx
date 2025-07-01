@@ -10,7 +10,7 @@ import CreatorInsightsDashboard from './pages/Agency/ModelView'
 import AgencyLayout from './layouts/AgencyLayout' // ⬅️ Layout that wraps Sidebar + Outlet
 import ModelLayout from './layouts/ModelLayout'
 import ProtectedRoute from './utils/ProtectedRoute'
-import InstagramSuccess from './components/socialMedia/success'
+import InstagramSuccess from './components/socialMedia/Success'
 function App() {
   return (
     <Routes>
