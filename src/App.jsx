@@ -10,6 +10,7 @@ import CreatorInsightsDashboard from './pages/Agency/ModelView'
 import AgencyLayout from './layouts/AgencyLayout' // ⬅️ Layout that wraps Sidebar + Outlet
 import ModelLayout from './layouts/ModelLayout'
 import ProtectedRoute from './utils/ProtectedRoute'
+import InstagramSuccess from './components/socialMedia/success'
 function App() {
   return (
     <Routes>
@@ -19,6 +20,8 @@ function App() {
   <Route path="/model/register" element={<Register />} />
   <Route path="/agency/login" element={<AgencyLogin />} />
   <Route path="/agency/register" element={<AgencyRegister />} />
+  <Route path="/instagram/success" element={<InstagramSuccess />} />
+
 
   {/* Protected model routes */}
   <Route element={<ProtectedRoute allowedRole="model" />}>

@@ -11,6 +11,7 @@ import {
   Plus,
 } from "lucide-react";
 import ModelTaskList from "../../components/task/ModelTask";
+import ConnectInstagramButton from "../../components/socialMedia/ConnectInstagramButton";
 
 export default function ModelDashboard() {
   const user = JSON.parse(localStorage.getItem("auth"))?.user;
@@ -92,13 +93,13 @@ export default function ModelDashboard() {
               Tasks
             </button>
             <button
-              onClick={() => handleTabChange("Team")}
+              onClick={() => handleTabChange("Social Media")}
               className={`w-full flex items-center px-3 py-2 rounded ${
-                activeTab === "Team" ? "bg-blue-600" : "hover:bg-gray-800"
+                activeTab === "Social Media" ? "bg-blue-600" : "hover:bg-gray-800"
               }`}
             >
               <Users className="w-5 h-5 mr-2" />
-              Team
+              Social Media
             </button>
             <button
               onClick={() => handleTabChange("Settings")}
@@ -185,6 +186,8 @@ export default function ModelDashboard() {
           )
         ): activeTab === "Tasks" ? (
           <ModelTaskList />
+        ): activeTab === "Social Media" ? (
+          <ConnectInstagramButton />
         ) : (
           <div className="text-gray-400">Coming Soon: {activeTab}</div>
         )}
