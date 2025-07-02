@@ -18,6 +18,7 @@ import {
 import ChatWindow from "../../components/ChatWindow"
 import CreateTask from "../../components/task/CreateTask"
 import TaskList from '../../components/task/TaskList'
+import InstagramDashboard from "../../components/socialMedia/InstagramInsights"
 
 export default function CreatorInsightsDashboard() {
   const { id } = useParams()
@@ -27,15 +28,15 @@ export default function CreatorInsightsDashboard() {
 
   const [sidebarItems, setSidebarItems] = useState([
     { icon: MessageSquare, label: "Messenger", active: true },
-    { icon: Calendar, label: "Billing" },
-    { icon: Calendar, label: "Calendar" },
     { icon: Calendar, label: "Tasks" },
+    { icon: Users, label: "Social Media" },
+    { icon: Calendar, label: "Calendar" },
+    { icon: Calendar, label: "Billing" },
     { icon: TrendingUp, label: "Traffic" },
     { icon: Calendar, label: "Postings" },
     { icon: UploadCloud, label: "Content Upload" },
     { icon: Flame, label: "Viral Trends" },
     { icon: ShieldAlert, label: "Leak Protection" },
-    { icon: Users, label: "Team Members" },
     { icon: Gift, label: "Paid Platforms" },
     { icon: Trophy, label: "Rewards" },
     { icon: Film, label: "Reel Examples" },
@@ -368,6 +369,8 @@ export default function CreatorInsightsDashboard() {
             </div>
             <TaskList modelId={id} />
           </div>
+        ): activeMenu === "Social Media" ? (
+          <InstagramDashboard Id={id} role={'agency'}/>
         ) : (
           <div className="flex flex-col items-center justify-center h-full">
             <h1 className="text-3xl font-bold mb-4 text-white">Creator Insights Dashboard</h1>

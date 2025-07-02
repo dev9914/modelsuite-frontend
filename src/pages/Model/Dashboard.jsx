@@ -187,7 +187,7 @@ export default function ModelDashboard() {
         ): activeTab === "Tasks" ? (
           <ModelTaskList />
         ): activeTab === "Social Media" ? (
-          <InstagramDashboard />
+          <InstagramDashboard Id={user._id} role={user.role} />
         ) : (
           <div className="text-gray-400">Coming Soon: {activeTab}</div>
         )}
