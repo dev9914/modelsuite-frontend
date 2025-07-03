@@ -9,9 +9,12 @@ import {
   Calendar,
   Settings,
   Plus,
+  TrendingUp,
 } from "lucide-react";
 import ModelTaskList from "../../components/task/ModelTask";
 import InstagramDashboard from "../../components/socialMedia/InstagramInsights";
+import BillingDashboard from "../../components/Billing/Billing";
+import ModelCalender from "../../components/Calender/ModelCalender";
 
 export default function ModelDashboard() {
   const user = JSON.parse(localStorage.getItem("auth"))?.user;
@@ -75,13 +78,13 @@ export default function ModelDashboard() {
               Messenger
             </button>
             <button
-              onClick={() => handleTabChange("Calendar")}
+              onClick={() => handleTabChange("Billing")}
               className={`w-full flex items-center px-3 py-2 rounded ${
-                activeTab === "Calendar" ? "bg-blue-600" : "hover:bg-gray-800"
+                activeTab === "Billing" ? "bg-blue-600" : "hover:bg-gray-800"
               }`}
             >
               <Calendar className="w-5 h-5 mr-2" />
-              Calendar
+              Billing
             </button>
             <button
               onClick={() => handleTabChange("Tasks")}
@@ -93,22 +96,22 @@ export default function ModelDashboard() {
               Tasks
             </button>
             <button
-              onClick={() => handleTabChange("Social Media")}
+              onClick={() => handleTabChange("Traffic")}
               className={`w-full flex items-center px-3 py-2 rounded ${
-                activeTab === "Social Media" ? "bg-blue-600" : "hover:bg-gray-800"
+                activeTab === "Traffic" ? "bg-blue-600" : "hover:bg-gray-800"
               }`}
             >
-              <Users className="w-5 h-5 mr-2" />
-              Social Media
+              <TrendingUp className="w-5 h-5 mr-2" />
+              Traffic
             </button>
             <button
-              onClick={() => handleTabChange("Settings")}
+              onClick={() => handleTabChange("Calendar")}
               className={`w-full flex items-center px-3 py-2 rounded ${
                 activeTab === "Settings" ? "bg-blue-600" : "hover:bg-gray-800"
               }`}
             >
-              <Settings className="w-5 h-5 mr-2" />
-              Settings
+              <Calendar className="w-5 h-5 mr-2" />
+              Calendar
             </button>
           </nav>
         </div>
@@ -186,9 +189,12 @@ export default function ModelDashboard() {
           )
         ): activeTab === "Tasks" ? (
           <ModelTaskList />
-        ): activeTab === "Social Media" ? (
+        ): activeTab === "Traffic" ? (
           <InstagramDashboard Id={user._id} role={user.role} />
-        ) : (
+        )
+        : activeTab === "Calendar" ?(
+        <ModelCalender/>) 
+        : (
           <div className="text-gray-400">Coming Soon: {activeTab}</div>
         )}
       </div>
