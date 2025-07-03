@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 const Home = () => (
   <div className="min-h-screen bg-gradient-to-br from-gray-950 to-gray-900 text-white flex flex-col">
     <nav className="bg-gray-900 border-b border-gray-800 shadow-md py-4 px-8 flex justify-between items-center">
-      <h1 className="text-2xl font-extrabold tracking-tight text-white">ModelSuite</h1>
+      <h1 className="text-2xl font-extrabold tracking-tight text-red-600">ModelSuite</h1>
       <div className="space-x-4">
         <Link to="/model/login" className="text-blue-400 hover:text-blue-200 font-semibold transition">Model Login</Link>
         <Link to="/agency/login" className="text-green-400 hover:text-green-200 font-semibold transition">Agency Login</Link>
