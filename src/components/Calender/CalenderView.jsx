@@ -310,7 +310,6 @@ const CalendarView = ({modelInfo}) => {
                             className="bg-blue-600 text-white text-xs p-1 rounded cursor-pointer hover:bg-blue-700 transition-colors"
                           >
                             <div className="font-medium truncate">{event.title}</div>
-                            {event.assignedTo && <div className="text-blue-200 truncate">{event.description}</div>}
                           </div>
                         ))}
                         {dayEvents.length > 3 && (

@@ -10,6 +10,7 @@ import {
   Settings,
   Plus,
   TrendingUp,
+  CalendarCheck,
 } from "lucide-react";
 import ModelTaskList from "../../components/task/ModelTask";
 import InstagramDashboard from "../../components/socialMedia/InstagramInsights";
@@ -78,13 +79,13 @@ export default function ModelDashboard() {
               Messenger
             </button>
             <button
-              onClick={() => handleTabChange("Billing")}
+              onClick={() => handleTabChange("Billing & Finance")}
               className={`w-full flex items-center px-3 py-2 rounded ${
-                activeTab === "Billing" ? "bg-blue-600" : "hover:bg-gray-800"
+                activeTab === "Billing & Finance" ? "bg-blue-600" : "hover:bg-gray-800"
               }`}
             >
               <Calendar className="w-5 h-5 mr-2" />
-              Billing
+              Billing & Finance
             </button>
             <button
               onClick={() => handleTabChange("Tasks")}
@@ -92,17 +93,17 @@ export default function ModelDashboard() {
                 activeTab === "Tasks" ? "bg-blue-600" : "hover:bg-gray-800"
               }`}
             >
-              <Calendar className="w-5 h-5 mr-2" />
+              <CalendarCheck className="w-5 h-5 mr-2" />
               Tasks
             </button>
             <button
-              onClick={() => handleTabChange("Traffic")}
+              onClick={() => handleTabChange("Traffic & Analytics")}
               className={`w-full flex items-center px-3 py-2 rounded ${
-                activeTab === "Traffic" ? "bg-blue-600" : "hover:bg-gray-800"
+                activeTab === "Traffic & Analytics" ? "bg-blue-600" : "hover:bg-gray-800"
               }`}
             >
               <TrendingUp className="w-5 h-5 mr-2" />
-              Traffic
+              Traffic & Analytics
             </button>
             <button
               onClick={() => handleTabChange("Calendar")}
@@ -189,7 +190,7 @@ export default function ModelDashboard() {
           )
         ): activeTab === "Tasks" ? (
           <ModelTaskList />
-        ): activeTab === "Traffic" ? (
+        ): activeTab === "Traffic & Analytics" ? (
           <InstagramDashboard Id={user._id} role={user.role} />
         )
         : activeTab === "Calendar" ?(

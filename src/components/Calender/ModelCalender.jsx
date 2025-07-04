@@ -241,7 +241,7 @@ const ModelCalender = () => {
                             className="bg-blue-600 text-white text-xs p-1 rounded cursor-pointer hover:bg-blue-700 transition-colors"
                           >
                             <div className="font-medium truncate">{event.title}</div>
-                            {event.assignedTo && <div className="text-blue-200 truncate">{event.description}</div>}
+                          
                           </div>
                         ))}
                         {dayEvents.length > 3 && (
@@ -261,7 +261,7 @@ const ModelCalender = () => {
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
             <div className="bg-slate-800 rounded-xl p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-bold">{selectedEvent ? "Edit Event" : "Create Event"}</h3>
+                <h3 className="text-xl font-bold">Event Info</h3>
                 <button onClick={closeModal} className="p-2 hover:bg-slate-700 rounded-lg transition-colors">
                   <X size={20} />
                 </button>
@@ -273,6 +273,7 @@ const ModelCalender = () => {
                   <input
                     required
                     type="text"
+                    disabled
                     value={form.title}
                     // onChange={(e) => setForm({ ...form, title: e.target.value })}
                     className="w-full p-3 bg-slate-700 border border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -283,6 +284,7 @@ const ModelCalender = () => {
                 <div>
                   <label className="block text-sm font-medium mb-2">Description</label>
                   <textarea
+                  disabled
                     value={form.description}
                     // onChange={(e) => setForm({ ...form, description: e.target.value })}
                     className="w-full p-3 bg-slate-700 border border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -316,6 +318,7 @@ const ModelCalender = () => {
                   <label className="block text-sm font-medium mb-2">Location</label>
                   <input
                     type="text"
+                    disabled
                     value={form.location}
                     // onChange={(e) => setForm({ ...form, location: e.target.value })}
                     className="w-full p-3 bg-slate-700 border border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -325,6 +328,7 @@ const ModelCalender = () => {
 
                 <div className="flex items-center gap-2">
                   <input
+                  disabled
                     type="checkbox"
                     id="allDay"
                     checked={form.isAllDay}
