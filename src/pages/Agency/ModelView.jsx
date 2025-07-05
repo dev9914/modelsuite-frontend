@@ -18,10 +18,20 @@ import {
   MoreHorizontal,
   Hash,
   User,
+  Settings,
+  EarthLock,
+  ChartNoAxesColumn,
+  CalendarCheck,
+  UserPen,
+  User,
+  MessageCircleQuestion,
 } from "lucide-react"
 import ChatWindow from "../../components/ChatWindow"
-import CreateTask from "../../components/task/CreateTask"
 import TaskList from '../../components/task/TaskList'
+import InstagramDashboard from "../../components/socialMedia/InstagramInsights"
+import BillingDashboard from "../../components/Billing/Billing"
+import CalendarView from "../../components/Calender/CalenderView"
+import { GiProtectionGlasses } from "react-icons/gi"
 
 export default function CreatorInsightsDashboard() {
   const { id } = useParams()
@@ -31,18 +41,20 @@ export default function CreatorInsightsDashboard() {
 
   const [sidebarItems, setSidebarItems] = useState([
     { icon: MessageSquare, label: "Messenger", active: true },
-    { icon: Calendar, label: "Billing" },
     { icon: Calendar, label: "Calendar" },
-    { icon: Calendar, label: "Tasks" },
-    { icon: TrendingUp, label: "Traffic" },
-    { icon: Calendar, label: "Postings" },
-    { icon: UploadCloud, label: "Content Upload" },
-    { icon: Flame, label: "Viral Trends" },
+    { icon: CalendarCheck, label: "Tasks" },
+    { icon: TrendingUp, label: "Traffic & Analytics" },
+    { icon: UploadCloud, label: "Postings & Content Upload" },
+    { icon: ChartNoAxesColumn, label: "Viral Trends & Inspiration" },
+    { icon: EarthLock, label: "Leak Protection" },
+    { icon: User, label: "Team Members" },
     { icon: ShieldAlert, label: "Leak Protection" },
-    { icon: Users, label: "Team Members" },
+    { icon: Calendar, label: "Billing & Finance" },
     { icon: Gift, label: "Paid Platforms" },
-    { icon: Trophy, label: "Rewards" },
-    { icon: Film, label: "Reel Examples" },
+    { icon: Trophy, label: "Rewards & Gamification" },
+    { icon: Settings, label: "Settings" },
+    { icon: UserPen, label: "My Profile" },
+    { icon: MessageCircleQuestion, label: "Support & Help" },
   ])
 
   const [modeinfo, setModelInfo] = useState({})
@@ -507,6 +519,16 @@ export default function CreatorInsightsDashboard() {
                 </button>
               </div>
             </div>
+        ): activeMenu === "Traffic & Analytics" ? (
+          <InstagramDashboard Id={id} role={'agency'}/>
+        ) : activeMenu === "Billing & Finance" ? (
+          <BillingDashboard modelInfo={modeinfo} />
+        ): activeMenu === "Calendar" ? (
+          <CalendarView modelInfo={modeinfo} />
+        ): (
+          <div className="flex flex-col items-center justify-center h-full">
+            <h1 className="text-3xl font-bold mb-4 text-white">Creator Insights Dashboard</h1>
+            <p className="text-gray-400 text-lg">Select a menu item to begin.</p>
           </div>
         )}
       </div>
