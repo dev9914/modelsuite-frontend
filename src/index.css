@@ -2,6 +2,26 @@
 @tailwind components;
 @tailwind utilities;
 
-.input {
-  @apply w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400;
+@layer base {
+  body {
+    @apply bg-gray-950 text-gray-100;
+  }
+  
+  #root {
+    @apply min-h-screen bg-gray-950;
+  }
+}
+
+@layer components {
+  .input {
+    @apply w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors;
+  }
+  
+  .btn-primary {
+    @apply bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-all duration-200;
+  }
+  
+  .btn-secondary {
+    @apply bg-gray-700 hover:bg-gray-600 text-gray-100 px-6 py-3 rounded-lg font-medium transition-all duration-200;
+  }
 }
