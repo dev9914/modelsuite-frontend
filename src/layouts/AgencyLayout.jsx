@@ -14,19 +14,19 @@ const Layout = () => {
     }
   }, [user]);
   return (
-    <div className="flex h-screen">
+    <div className="flex h-screen bg-gray-950">
   {/* Sidebar */}
   <Sidebar />
 
   {/* Right section (main content with navbar on top) */}
   <div className="flex flex-col flex-grow">
     {/* Navbar only inside main area */}
-    <div className=" ">
+    <div className="">
       <Navbar />
     </div>
 
     {/* Page content below navbar */}
-    <main className="flex-grow overflow-y-auto scrollbar-none bg-gray-100">
+    <main className="flex-grow overflow-y-auto scrollbar-thin bg-gradient-to-br from-gray-950 to-gray-900">
       <Outlet />
     </main>
   </div>

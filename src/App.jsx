@@ -13,6 +13,14 @@ import ProtectedRoute from './utils/ProtectedRoute'
 import InstagramSuccess from './components/socialMedia/Success'
 function App() {
   return (
+    <div className="min-h-screen bg-gray-950 text-gray-100">
+      <Routes>
+        {/* Public routes */}
+        <Route path="/" element={<Home />} />
+        <Route path="/model/login" element={<Login />} />
+        <Route path="/model/register" element={<Register />} />
+        <Route path="/agency/login" element={<AgencyLogin />} />
+        <Route path="/agency/register" element={<AgencyRegister />} />
     <Routes>
   {/* Public routes */}
   <Route path="/" element={<Home />} />
@@ -21,23 +29,22 @@ function App() {
   <Route path="/agency/login" element={<AgencyLogin />} />
   <Route path="/agency/register" element={<AgencyRegister />} />
   <Route path="/instagram/success" element={<InstagramSuccess />} />
+        {/* Protected model routes */}
+        <Route element={<ProtectedRoute allowedRole="model" />}>
+          <Route element={<ModelLayout />}>
+            <Route path="/model/dashboard" element={<ModelDashboard />} />
+          </Route>
+        </Route>
 
-
-  {/* Protected model routes */}
-  <Route element={<ProtectedRoute allowedRole="model" />}>
-    <Route element={<ModelLayout />}>
-      <Route path="/model/dashboard" element={<ModelDashboard />} />
-    </Route>
-  </Route>
-
-  {/* Protected agency routes */}
-  <Route element={<ProtectedRoute allowedRole="agency" />}>
-    <Route element={<AgencyLayout />}>
-      <Route path="/agency/dashboard" element={<AgencyDashboard />} />
-      <Route path="/agency/model-view/:id" element={<CreatorInsightsDashboard />} />
-    </Route>
-  </Route>
-</Routes>
+        {/* Protected agency routes */}
+        <Route element={<ProtectedRoute allowedRole="agency" />}>
+          <Route element={<AgencyLayout />}>
+            <Route path="/agency/dashboard" element={<AgencyDashboard />} />
+            <Route path="/agency/model-view/:id" element={<CreatorInsightsDashboard />} />
+          </Route>
+        </Route>
+      </Routes>
+    </div>
   )
 }
 
